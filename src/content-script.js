@@ -74,6 +74,7 @@ if (localStorage.getItem('is_saving') === 'false' && saveData) {
 // ADD EVENTLISTENER FOR KEYPRESS
 window.addEventListener('keydown', downHandler)
 window.onfocus = setData
+window.onblur = savePeriod
 window.onunload = () => {
   localStorage.setItem('is_saving', false);
 };
