@@ -5,10 +5,6 @@ const API_URL = "http://localhost:7878"
 const timerInterval = 5000
 let saveData = []
 
-// const [ textString, setTextString ] = useState('')
-// const [ characterCurrent, setCharacterCurrent ] = useState(0)
-// const [ characterLeftCount, setCharacterLeftCount ] = useState(0)
-
 // ACTION ON EVERY KEY PRESS
 const downHandler = (event) => {
 
@@ -37,10 +33,6 @@ function setData() {
   axios.get(API_URL).then((response) => {
     console.log(response)
     saveData = response.data
-    // setTextString(response.data.text_typed)
-    // setCharacterCurrent(response.data.character_count)
-    // setCharacterLeftCount(response.data.character_left)
-    // setAddPerInput(response.data.add_per_input)
 
     localStorage.setItem('typed_string', response.data.text_typed)
     localStorage.setItem('typed_string_this_save', '')
@@ -58,21 +50,15 @@ function setData() {
 const savePeriod = () => {
   console.log('saved');
   axios.get(API_URL).then((response) => {
-    // console.log('first Get');
     const putBody = {
       text_typed: localStorage.getItem('typed_string_this_save'),
       character_count: response.data.character_count + Number(localStorage.getItem('character_count_this_save'))
     };
-    // console.log(putBody)
     return axios.put(API_URL, putBody);
   }).then((response) => {
-    // console.log(response);
     localStorage.setItem('character_count_this_save', 0);
     localStorage.setItem('typed_string_this_save', '');
     return axios.get(API_URL);
-  }).then((response) => {
-    // setTextString(response.data.text_typed);
-    // setCharacterLeftCount(response.data.character_left);
   }).catch((error) => {
     console.log(error);
   })
@@ -84,7 +70,13 @@ if (localStorage.getItem('is_saving') === 'false' && saveData) {
   localStorage.setItem('is_saving', true);
 };
 
+// ON MOUNT
+// ADD EVENTLISTENER FOR KEYPRESS
 window.addEventListener('keydown', downHandler)
+window.onfocus = setData
 window.onunload = () => {
   localStorage.setItem('is_saving', false);
 };
+
+// EXECUTE INITIAL FUNCTIONALITY
+setData()
