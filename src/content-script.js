@@ -1,12 +1,13 @@
 import axios from 'axios'
 
-const notLogged = ["Space", "Enter", "Backspace", "Control", "Alt", "Shift", "Tab", "Meta", "ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", "NumLock", "CapsLock", "Escape", "MediaTrackNext", "MediaTrackPrevious", "MediaStop", "MediaPlayPause","AudioVolumeMute", "AudioVolumeDown", "AudioVolumeUp", "LaunchApplication2", "Delete", "Insert", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "PageDown", "PageUp", "Home", "End"]
-
 // const API_URL = "https://productivity-idle-server.herokuapp.com/"
 const API_URL = "http://localhost:7878"
 
+const notLogged = ["Space", "Enter", "Backspace", "Control", "Alt", "Shift", "Tab", "Meta", "ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", "NumLock", "CapsLock", "Escape", "MediaTrackNext", "MediaTrackPrevious", "MediaStop", "MediaPlayPause","AudioVolumeMute", "AudioVolumeDown", "AudioVolumeUp", "LaunchApplication2", "Delete", "Insert", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "PageDown", "PageUp", "Home", "End"]
+const randomInput = ["a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z",0,1,2,3,4,5,6,7,8,9,"!","@","#","$","%","^","&","*","(",")","-","_","+","=","|","\\","{","}","[","]",`'`,`"`,"`","~",":",";","<",">",",",".","?","/"]
 const timerInterval = 5000
 let saveData = []
+let botTimer
 
 // ACTION ON EVERY KEY PRESS
 const downHandler = (event) => {
@@ -67,11 +68,23 @@ const savePeriod = () => {
   })
 }
 
+// BOT INPUT FUNCTION
+const botPeriod = () => {
+  const rdmInput = randomInput[Math.floor(Math.random()*randomInput.length)]
+  console.log(rdmInput)
+  inputHandler(rdmInput)
+}
+
 // DO CHECK IF THERE IS DATA AND TIMER NOT STARTED YET
 if (localStorage.getItem('is_saving') === 'false' && saveData) {
   setInterval(savePeriod, timerInterval);
   localStorage.setItem('is_saving', true);
 };
+
+if (localStorage.getItem('bot_running') === 'false' && botTypes > 0) {
+  botTimer = setInterval(botPeriod, (botTypes*5000))
+  localStorage.setItem('bot_running', true)
+}
 
 // ON MOUNT
 // ADD EVENTLISTENER FOR KEYPRESS
@@ -80,6 +93,8 @@ window.onfocus = setData
 window.onblur = savePeriod
 window.onunload = () => {
   localStorage.setItem('is_saving', false);
+  localStorage.setItem('bot_running', false);
+  clearInterval(botTimer)
 };
 
 // EXECUTE INITIAL FUNCTIONALITY
