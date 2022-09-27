@@ -11,15 +11,17 @@ let botTimer
 
 // ACTION ON EVERY KEY PRESS
 const downHandler = (event) => {
-
   if (notLogged.some(string => event.key === string)) {
     console.log("Not Logged");
     return;
   };
+  inputHandler(event.key)
+}
 
-  console.log(event.key)
-  const typedAdded = localStorage.getItem('typed_string') + event.key
-  const typedThisSave = localStorage.getItem('typed_string_this_save') + event.key
+// INPUT HANDLER
+const inputHandler = (input) => {
+  const typedAdded = localStorage.getItem('typed_string') + input
+  const typedThisSave = localStorage.getItem('typed_string_this_save') + input
   const countAdded = Number(localStorage.getItem('character_count')) + Number(localStorage.getItem('add_per_input'))
   const countThisSave = Number(localStorage.getItem('character_count_this_save')) + Number(localStorage.getItem('add_per_input'))
   const countLeftAdded = Number(localStorage.getItem('character_left')) + Number(localStorage.getItem('add_per_input'))
@@ -29,7 +31,6 @@ const downHandler = (event) => {
   localStorage.setItem('character_count', countAdded)
   localStorage.setItem('character_count_this_save', countThisSave)
   localStorage.setItem('character_left', countLeftAdded)
-
 }
 
 // FUNCTION TO SET DATA
