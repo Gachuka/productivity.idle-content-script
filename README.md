@@ -36,6 +36,22 @@ npm install
 ```
 This will install the required dependencies needed.
 
+### Using Local/Remote Database
+
+Navigate to *./src/content-script.js*, uncomment the line of code with the wanted API_URL and leave the other one commented.
+
+- Using local database
+```
+// const API_URL = "REMOTE_DATABASE_URL"
+const  API_URL = "http://localhost:PORT_NUMBER"
+```
+
+- Using remote database
+```
+const API_URL = "REMOTE_DATABASE_URL"
+// const  API_URL = "http://localhost:PORT_NUMBER"
+```
+
 ### Using Webpack 
 
 When the code is ready to be bundled, execute the following code:
