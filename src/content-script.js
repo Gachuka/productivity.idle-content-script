@@ -7,12 +7,12 @@ const notLogged = ["Space", "Enter", "Backspace", "Control", "Alt", "Shift", "Ta
 const randomInput = ["a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z",0,1,2,3,4,5,6,7,8,9,"!","@","#","$","%","^","&","*","(",")","-","_","+","=","|","\\","{","}","[","]",`'`,`"`,"`","~",":",";","<",">",",",".","?","/"]
 const timerInterval = 5000
 let saveData = []
-let botTimer
+let botTimer = 0
+let botTypes = 0
 
 // ACTION ON EVERY KEY PRESS
 const downHandler = (event) => {
   if (notLogged.some(string => event.key === string)) {
-    console.log("Not Logged");
     return;
   };
   inputHandler(event.key)
@@ -36,8 +36,8 @@ const inputHandler = (input) => {
 // FUNCTION TO SET DATA
 function setData() {
   axios.get(API_URL).then((response) => {
-    console.log(response)
     saveData = response.data
+    botTypes = response.data.upgrade_3
 
     localStorage.setItem('typed_string', response.data.text_typed)
     localStorage.setItem('typed_string_this_save', '')
@@ -53,7 +53,6 @@ function setData() {
 
 // SAVE FUNCTION
 const savePeriod = () => {
-  console.log('saved');
   axios.get(API_URL).then((response) => {
     const putBody = {
       text_typed: localStorage.getItem('typed_string_this_save'),
@@ -72,7 +71,6 @@ const savePeriod = () => {
 // BOT INPUT FUNCTION
 const botPeriod = () => {
   const rdmInput = randomInput[Math.floor(Math.random()*randomInput.length)]
-  console.log(rdmInput)
   inputHandler(rdmInput)
 }
 
@@ -82,21 +80,34 @@ if (localStorage.getItem('is_saving') === 'false' && saveData) {
   localStorage.setItem('is_saving', true);
 };
 
-if (localStorage.getItem('bot_running') === 'false' && botTypes > 0) {
-  botTimer = setInterval(botPeriod, (botTypes*5000))
-  localStorage.setItem('bot_running', true)
+// FUNCTION TO START BOT IF UPGRADE 3 IS PURCHASED
+const startBot = () => {
+  setTimeout(() => {
+    if (localStorage.getItem('bot_running') === 'false' && botTypes) {
+      botTimer = setInterval(botPeriod, (botTypes*5000))
+      localStorage.setItem('bot_running', true)
+    }
+  }, 1000)
 }
 
 // ON MOUNT
 // ADD EVENTLISTENER FOR KEYPRESS
 window.addEventListener('keydown', downHandler)
-window.onfocus = setData
-window.onblur = savePeriod
+window.onfocus = () => {
+  setData();
+  startBot();
+};
+window.onblur = () => {
+  savePeriod();
+  clearInterval(botTimer)
+  localStorage.setItem('bot_running', false)
+};
 window.onunload = () => {
   localStorage.setItem('is_saving', false);
   localStorage.setItem('bot_running', false);
-  clearInterval(botTimer)
+  clearInterval(botTimer);
 };
 
 // EXECUTE INITIAL FUNCTIONALITY
-setData()
+setData();
+startBot();
