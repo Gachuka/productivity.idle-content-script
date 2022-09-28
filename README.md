@@ -1,5 +1,7 @@
 # Productivity.Idle-content-script
 
+PLEASE READ [Productivity.Idle](https://github.com/Gachuka/productivity.idle) FIRST BEFORE USING THIS REPOSITORY
+
 This repository is used to compile a content-script.js that is used and runs in the background in [Productivity.Idle](https://github.com/Gachuka/productivity.idle).
 
 The content-script.js contains the event listener to increment "characters" on every key input.
